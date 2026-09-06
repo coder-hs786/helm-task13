@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-backend
+  labels:
+    app: backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.backend.containerPort }}
+
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+
+          env:
+            - name: MONGO_URI
+              value: "mongodb://{{ .Release.Name }}-mongodb:27017/{{ .Values.mongodb.database }}"

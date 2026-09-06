@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-mongodb
+  labels:
+    app: mongodb
+spec:
+  serviceName: {{ .Release.Name }}-mongodb
+  replicas: {{ .Values.mongodb.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: mongodb
+
+  template:
+    metadata:
+      labels:
+        app: mongodb
+
+    spec:
+      containers:
+        - name: mongodb
+          image: "{{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}"
+          imagePullPolicy: {{ .Values.mongodb.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ .Values.mongodb.port }}
+
+          env:
+            - name: MONGO_INITDB_DATABASE
+              value: {{ .Values.mongodb.database | quote }}
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+
+      volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-mongodb-pvc
