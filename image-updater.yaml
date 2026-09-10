@@ -1,0 +1,36 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: ecommerce-image-updater
+  namespace: argocd
+
+spec:
+  writeBackConfig:
+    method: git
+    gitConfig:
+      branch: feature/sara
+      writeBackTarget: helmvalues:./values.yaml
+
+  applicationRefs:
+    - namePattern: ecommerce-app
+
+      images:
+        - alias: frontend
+          imageName: sara735/ecommerce-frontend
+          commonUpdateSettings:
+            updateStrategy: alphabetical
+            allowTags: regexp:^v[0-9]+$
+          manifestTargets:
+            helm:
+              name: frontend.image.repository
+              tag: frontend.image.tag
+
+        - alias: backend
+          imageName: sara735/ecommerce-backend
+          commonUpdateSettings:
+            updateStrategy: alphabetical
+            allowTags: regexp:^v[0-9]+$
+          manifestTargets:
+            helm:
+              name: backend.image.repository
+              tag: backend.image.tag
