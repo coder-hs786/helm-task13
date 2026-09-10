@@ -3,7 +3,7 @@ frontend:
 
   image:
     repository: sara735/ecommerce-frontend
-    tag: v1
+    tag: v2
     pullPolicy: IfNotPresent
 
   containerPort: 8080
@@ -27,7 +27,7 @@ backend:
 
   image:
     repository: sara735/ecommerce-backend
-    tag: v1
+    tag: v2
     pullPolicy: IfNotPresent
 
   containerPort: 5000
