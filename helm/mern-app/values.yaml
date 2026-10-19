@@ -1,5 +1,5 @@
 frontend:
-  replicaCount: 3
+  replicaCount: 4
 
   image:
     repository: sara735/ecommerce-frontend
